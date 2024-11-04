@@ -1,32 +1,14 @@
-import { Component } from "react";
-import { Book } from "../types/book";
 import BookShow from "./BookShow";
+import useBooksContext from "../hooks/use-books-context";
 
-export interface Props {
-  books: Book[];
-  onDelete: (id: number) => void;
-  onEdit: (id: number, newTitle: string) => void;
-}
+function BookList() {
+  const { books } = useBooksContext();
 
-class BookList extends Component<Props> {
-  constructor(props: Props) {
-    super(props);
-  }
+  const bookShow = books.map((book) => {
+    return <BookShow key={book.id} book={book} />;
+  });
 
-  render() {
-    const books = this.props.books.map((book) => {
-      return (
-        <BookShow
-          key={book.id}
-          book={book}
-          onDelete={this.props.onDelete}
-          onEdit={this.props.onEdit}
-        />
-      );
-    });
-
-    return <div className="book-list">{books}</div>;
-  }
+  return <div className="book-list">{bookShow}</div>;
 }
 
 export default BookList;

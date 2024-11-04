@@ -1,37 +1,34 @@
-import { ChangeEvent, Component, FormEvent } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import { Book } from "../types/book";
+import useBooksContext from "../hooks/use-books-context";
 
 export interface Props {
   book: Book;
-  onSubmit: (id: number, newTitle: string) => void;
+  onSubmit: () => void;
 }
 
-class BookEdit extends Component<Props> {
-  state: { title: string } = { title: this.props.book.title };
+function BookEdit({ book, onSubmit }: Props) {
+  const [title, setTitle] = useState(book.title);
+  const { editBookById } = useBooksContext();
 
-  handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ title: event.target.value });
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setTitle(event.target.value);
   };
 
-  handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    this.props.onSubmit(this.props.book.id, this.state.title);
+    onSubmit();
+    editBookById(book.id, title);
   };
 
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit} className="book-edit">
-        <label>Title</label>
-        <input
-          className="input"
-          value={this.state.title}
-          onChange={this.handleChange}
-        />
-        <button className="button is-primary">Save</button>
-      </form>
-    );
-  }
+  return (
+    <form onSubmit={handleSubmit} className="book-edit">
+      <label>Title</label>
+      <input className="input" value={title} onChange={handleChange} />
+      <button className="button is-primary">Save</button>
+    </form>
+  );
 }
 
 export default BookEdit;
